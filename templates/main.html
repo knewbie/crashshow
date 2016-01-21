@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+{% block list %}
+
+<div class="list">
+        <div class="row list-group" style="margin-top:3px;">
+        {% for entry in entries %}
+        <div class="col-xs-2">
+        <a class="list-group-item" href="{{ url_for('show_detail',date = entry.date) }}">{{entry.date}}</a>
+        </div>
+        {% endfor %}
+        </div>
+</div>
+{% endblock %}
+

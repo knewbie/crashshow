@@ -1,0 +1,45 @@
+{% extends 'main.html' %}
+{% block detail %}
+
+<div class='content'>
+    <h2> Detail Crash Info </h2>
+    {% if data %}
+        <table class='table table-hover'>
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Info</th>
+                    <th>Times</th>
+                    <th>Status</th>
+                    <th>Author</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data %}
+                <tr class={% if item.status == 0 %} "active"
+                    {% elif item.status == 1 %}"info" 
+                    {$ elif item.status == 2 %}"success"
+                    {% endif %}>
+                    <td> {{ item.id }} </td>
+                    <td> {{ item.info }} </td>
+                    <td> {{ item.times }} </td>
+                    <td> {{ item.author }} </td>
+                    {% if item.status == 0 %}
+                    <td>求带走</td>
+                    <td> <a class="btn btn-info" href="{{ url_for('takeit', id=item.id) }}">就她吧</a></td>
+                    {% elif item.status == 1 %}
+                    <td>享受中</td>
+                    <td> <a class="btn btn-warning" href="{{ url_for('doit',id=item.id) }}" >Done</a></td>
+                    {% elif item.status == 2 %}
+                    <td>阵亡</td>
+                    <td class="btn btn-success">被<strong>{{item.author}}</strong>干死了！！</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+</div>
+
+{% endblock %}

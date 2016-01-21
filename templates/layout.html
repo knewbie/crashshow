@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Enjoy Crash Info</title>
+        
+        <link rel="icon" href="{{ url_for('static',filename='favicon.ico') }}">
+
+        <!-- Bootstrap core CSS -->
+        <link href="{{ url_for('static',filename='css/bootstrap.min.css') }}" rel="stylesheet">
+        <!-- Bootstrap theme -->
+        <link href="{{ url_for('static',filename='css/bootstrap-theme.min.css') }}" rel="stylesheet">
+
+        <link href="{{ url_for('static',filename='css/style.css') }}" rel="stylesheet">
+
+    </head>
+
+    <body>
+        <div class="page-header">
+            <div class="info"><h1>Crash Info List</h1></div>
+
+            {% if not session.login_in %}
+            <div class="login">
+                <form  class="form-inline" action="{{ url_for('login') }}" method="post">
+                    <div class="form-group">
+                        <label class="sr-only">Name</label>
+                        <input type="text" class="form-control" name="username" placeholder="Name">
+                    </div>
+                    <div class="form-group">
+                        <label class="sr-only" >Password</label>
+                        <input type="password" class="form-control" name="password" placeholder="Password">
+                    </div>
+                    <button type="submit" class="btn btn-default">Sign in</button>
+                </form>
+            </div>
+            {% else %}
+            <div class="nav-login">
+                <a href="{{ url_for('logout') }}">Sign Out </a>
+            </div>
+            {% endif %}
+        </div>
+        <div class="waring">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for msg in messages %}
+        <p class="bg-danger"><strong> {{ msg }} </strong></p>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        
+        {% if error %} <p class="bg-danger"> <strong>Error: </strong>{{ error }} </p> {% endif %}
+
+        </div>
+
+        {% block list %}
+        {% endblock %}
+
+        {% block detail %}
+        {% endblock %}
+
+        {% block login %}
+        {% endblock %}
+
+    </body>
+</html>
