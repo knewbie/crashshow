@@ -51,13 +51,15 @@ def checkMatchit(line):
     for key in key_words:
         rlt = re.search(key, line)
         if rlt:
-            flag = False
+            flag = 0
             if str(key) == 'CEGUI::ScriptException':
-                flag = True
-            elif str(key) == 'LUA ERROR' and len(str(line)) < len(key)+5:
+                flag = 1
+            elif str(key) == 'LUA ERROR' and len(line[63:]) > 5:
+                flag = 2
+            else:
                 break
             return True, flag
-    return False, False
+    return False, -1
 
 
 def extrctCrashInfo(fname, db, hash_value):
@@ -66,19 +68,20 @@ def extrctCrashInfo(fname, db, hash_value):
         return
     fp = open(fname)
 
-    ret, special = False, False
+    ret, special = False, 0
     cnt = 0
     temp = []
+    lua_temp = []
     for line in fp.readlines():
         if len(str(line)) < 2:
             continue
 
-        if special:
+        if special == 1:
             cnt += 1
             temp.append(line.strip())
             if cnt == 2:
                 cnt = 0
-                special = False
+                special = -1
                 s = ''.join(temp)
                 hval = str(hashlib.md5(s).hexdigest())
                 if hval not in hash_value:
@@ -87,13 +90,14 @@ def extrctCrashInfo(fname, db, hash_value):
                 else:
                     hash_value[hval] += 1
                     db.update(hval, hash_value[hval])
+                temp = []
             continue
 
-        line_seq = line.split(' ')
         ret, special = checkMatchit(line)
         if ret:
+            line_seq = line.split(' ')
             s = ' '.join(line_seq[2:])
-            if not special:
+            if special == 0:
                 hval = str(hashlib.md5(s).hexdigest())
                 if hval not in hash_value:
                     hash_value[hval] = 1
@@ -101,8 +105,23 @@ def extrctCrashInfo(fname, db, hash_value):
                 else:
                     hash_value[hval] += 1
                     db.update(hval, hash_value[hval])
-            else:
+            elif special == 1:
                 temp.append(s)
+            else:
+                s = line[63:]
+                print s.strip()
+                lua_temp.append(s.strip())
+
+        if len(lua_temp) > 0:
+            s = ''.join(lua_temp)
+            hval = hashlib.md5(s).hexdigest()
+            if hval not in hash_value:
+                hash_value[hval] = 1
+                db.save_info(hval, s, 1, 0)
+            else:
+                hash_value[hval] += 1
+                db.update(hval, hash_value[hval])
+            lua_temp = []
 
     fp.close()
 
