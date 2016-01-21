@@ -21,7 +21,7 @@ class DB_model(object):
         data = {}
         conn = sqlite3.connect(self.dbname,5)
         cur = conn.cursor()
-        for row in cur.execute('select hash_value from hash_info').fetchall():
+        for row in cur.execute('select (hash_value,count) from hash_info').fetchall():
             data[row[0]] = row[1]
         conn.close()
         return data

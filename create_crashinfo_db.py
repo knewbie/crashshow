@@ -55,7 +55,7 @@ class Crash_Info_Model(object):
     def fetch_all_hash(self):
         data = {}
         cur = self.conn.cursor()
-        for row in cur.execute('select hash_value from hash_info').fetchall():
+        for row in cur.execute('select (hash_value,count) from hash_info').fetchall():
             data[row[0]] = row[1]
         return data
 
