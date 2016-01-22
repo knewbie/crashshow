@@ -55,9 +55,10 @@ def checkMatchit(line):
             if str(key) == 'CEGUI::ScriptException':
                 flag = 1
             elif str(key) == 'LUA ERROR' and len(line[63:]) > 5:
-                flag = 2
-            else:
-                break
+                if not re.search('function refid',line[63:]):
+                    flag = 2
+                else:
+                    break
             return True, flag
     return False, -1
 
@@ -81,7 +82,7 @@ def extrctCrashInfo(fname, db, hash_value):
             temp.append(line.strip())
             if cnt == 2:
                 cnt = 0
-                special = -1
+                ret, special = False, -1
                 s = ''.join(temp)
                 hval = str(hashlib.md5(s).hexdigest())
                 if hval not in hash_value:
@@ -98,7 +99,7 @@ def extrctCrashInfo(fname, db, hash_value):
             line_seq = line.split(' ')
             s = ' '.join(line_seq[2:])
             if special == 0:
-                hval = str(hashlib.md5(s).hexdigest())
+                hval = hashlib.md5(s).hexdigest()
                 if hval not in hash_value:
                     hash_value[hval] = 1
                     db.save_info(hval, s, 1, 0)
@@ -109,11 +110,12 @@ def extrctCrashInfo(fname, db, hash_value):
                 temp.append(s)
             else:
                 s = line[63:]
-                print s.strip()
                 lua_temp.append(s.strip())
+            continue
 
         if len(lua_temp) > 0:
-            s = ''.join(lua_temp)
+            ret,special = False, -1
+            s = '<br/>'.join(lua_temp)
             hval = hashlib.md5(s).hexdigest()
             if hval not in hash_value:
                 hash_value[hval] = 1
@@ -155,7 +157,8 @@ def main(dir='', beginDate=''):
     for k, v in all_hash_val.items():
         dbobj.save_hash(k, v)
 
-    collect_db_info(dbobj.get_db_name(), beginDate)
+    # store the db name into the all_db_info
+    #collect_db_info(dbobj.get_db_name(), beginDate)
 
     dbobj.close()
 

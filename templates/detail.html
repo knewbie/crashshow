@@ -17,11 +17,13 @@
             <tbody>
                 {% for item in data %}
                 <tr class={% if item.status == 0 %} "active"
-                    {% elif item.status == 1 %}"info" 
-                    {$ elif item.status == 2 %}"success"
+                    {% elif item.status == 1 %}"warning" 
+                    {% elif item.status == 2 %}"success"
                     {% endif %}>
                     <td> {{ item.id }} </td>
+                    {% autoescape false %}
                     <td> {{ item.info }} </td>
+                    {% endautoescape %}
                     <td> {{ item.times }} </td>
                     <td> {{ item.author }} </td>
                     {% if item.status == 0 %}

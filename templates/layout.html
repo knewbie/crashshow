@@ -20,7 +20,9 @@
 
     <body>
         <div class="page-header">
-            <div class="info"><h1>Crash Info List</h1></div>
+            <div class="info">
+                <h1>Crash Info Home</h1>
+            </div>
 
             {% if not session.login_in %}
             <div class="login">
@@ -38,7 +40,7 @@
             </div>
             {% else %}
             <div class="nav-login">
-                <a href="{{ url_for('logout') }}">Sign Out </a>
+                <a href="{{ url_for('logout') }}"> Sign Out </a>
             </div>
             {% endif %}
         </div>
@@ -53,15 +55,18 @@
         
         {% if error %} <p class="bg-danger"> <strong>Error: </strong>{{ error }} </p> {% endif %}
 
+        {% if warn %}
+        {% for w in warn %}
+        <p class='bg-waring'> <strong> {{ w }} </strong></p>
+        {% endfor %}
+        {% endif %}
+
         </div>
 
         {% block list %}
         {% endblock %}
 
         {% block detail %}
-        {% endblock %}
-
-        {% block login %}
         {% endblock %}
 
     </body>

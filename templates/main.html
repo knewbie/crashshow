@@ -1,14 +1,77 @@
 {% extends 'layout.html' %}
+
 {% block list %}
 
 <div class="list">
-        <div class="row list-group" style="margin-top:3px;">
-        {% for entry in entries %}
+    <div class="row list-group" style="margin-top:3px;">
         <div class="col-xs-2">
-        <a class="list-group-item" href="{{ url_for('show_detail',date = entry.date) }}">{{entry.date}}</a>
+            <a class="list-group-item" href="{{ url_for('index') }}" style='color:red'> Home </a>
         </div>
-        {% endfor %}
+        <div class="col-xs-2">
+            <a class="list-group-item" href="{{ url_for('show_today') }}">Today</a>
         </div>
+
+        {% if status %}
+        <div class="col-xs-2">
+            <a class="list-group-item" href="{{ url_for('update') }}">Refresh-Today-Info</a>
+        </div>
+        {% else %}
+        <div class="col-xs-2">
+            <a class="list-group-item" href="{{ url_for('pulldata') }}">Create-Db</a>
+        </div>
+        {% endif %}
+        <div class="col-xs-2">
+            <a class="list-group-item" href="{{ url_for('history') }}" style='color:purple'> History </a>
+        </div>
+
+    </div>
 </div>
 {% endblock %}
 
+{% block detail %}
+
+<div class='content'>
+    {% if data %}
+    <h2> Detail Crash Info </h2>
+    <div class="update-time">Update Time: <span>{{time}}</span></div>
+        <table class='table table-hover'>
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Info</th>
+                    <th>Times</th>
+                    <th>Author</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data %}
+                <tr class={% if item.status == 0 %} "active"
+                    {% elif item.status == 1 %}"warning" 
+                    {% elif item.status == 2 %}"success"
+                    {% endif %}>
+                    <td> {{ item.id }} </td>
+                    {% autoescape false %}
+                    <td class="crash-text"> {{ item.info }} </td>
+                    {% endautoescape %}
+                    <td> {{ item.times }} </td>
+                    <td> {{ item.author }} </td>
+                    {% if item.status == 0 %}
+                    <td>TODO</td>
+                    <td> <a class="btn btn-info" href="{{ url_for('takeit', id=item.id) }}">Take Her</a></td>
+                    {% elif item.status == 1 %}
+                    <td>DOING</td>
+                    <td> <a class="btn btn-warning" href="{{ url_for('doit',id=item.id) }}" >Done</a></td>
+                    {% elif item.status == 2 %}
+                    <td>DONE</td>
+                    <td class="btn btn-success"><strong>GAME OVER</strong></td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+</div>
+
+{% endblock %}

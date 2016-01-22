@@ -1,9 +1,12 @@
-body {margin:0 auto; padding: 0 auto; width:80%; font-family: sans-serif; background: #eee; }
+body { margin:0 auto; padding: 0 auto; width:80%; font-family: sans-serif; background: #eee; }
 
 a { text-decoration:none; }
 a:link { color: #FFCC33;}
 a:visited { color: #00F; }
 a:hover { color: #F00; }
+
+table { text-align:center;}
+table .crash-text { text-align:left;}
 
 .page-header .info { width:60%; text-align:center; font-size:20px;color:#666; }
 .nav-login {text-align:center; border: 1px dashed blue ; font-weight:bold; font-size:16px; float:right; }
@@ -11,6 +14,8 @@ a:hover { color: #F00; }
 .waring { margin-top:40px; font-size:18px; }
 
 .content h2 {text-align:center; }
+.update-time { margin:0 auto; text-align:center; height:50; color: #666; font-size:16px }
+.update-time span {  color:#F69; }
 
 .login  {width:40%; text-align:center;display:inline; float:right}
 
