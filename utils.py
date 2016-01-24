@@ -1,6 +1,6 @@
 import os
 import time
-import datetime
+from datetime import datetime, timedelta
 from db_utils import DB_model
 from data_collect import Extract
 
@@ -19,26 +19,19 @@ def time_int_to_str(t=0):
     return time.strftime("%Y-%m-%d", time.localtime(t))
 
 
-def db_update_time_to_str(row):
+def db_update_time_to_str(timestamp):
     '''translate the db update time to string '''
-    if row is None:
+    if timestamp is None:
         return ''
-    return '%s-%02d-%02d %02d:%02d:%02d' % \
-            (row[1], row[2], row[3], row[4], row[5], row[6])
-
-
-def db_update_time_to_datetime(row):
-    '''translate the db update time to datetime.datetime format'''
-    if row is None:
-        return datetime.datetime.now()
-    return datetime.datetime(row[1], row[2], row[3], row[4], row[5], row[6], row[7])
+    time = datetime.fromtimestamp(timestamp)
+    return '%s-%02d-%02d %02d:%02d:%02d' %(time.year,time.month,time.day,time.hour,time.minute,time.second)
 
 
 def get_ndays_ago_or_after(days=0):
     ''' get the time stamp without ndays
         return datetime.datetime struct
     '''
-    return datetime.datetime.now() - datetime.timedelta(days)
+    return datetime.now() - timedelta(days)
 
 
 def translator(frm='', to='', delete='', keep=None):
@@ -98,9 +91,9 @@ def check_upadte_elapse(pre):
                         1 => can update
                         2 => cross day
     '''
-    now = datetime.datetime.now()
-    pre = db_update_time_to_datetime(pre)
-    dif = datetime.datetime(1970, 1, 1) + (now - pre)
+    now = datetime.now()
+    pre = pre and datetime.fromtimestamp(pre) or datetime.now()
+    dif = datetime(1970, 1, 1) + (now - pre)
     if now.day != pre.day:
         return 2
     elif dif.hour > 2:
@@ -121,8 +114,3 @@ def collect_today_data():
     for k in os.listdir(src_dir):
         if 'kof97' in k and k not in files:
             copyfile(os.path.join(src_dir, k), os.path.join(DATA_PATH,k))
-        else:
-            print k
-
-
-

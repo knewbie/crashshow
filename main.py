@@ -60,8 +60,11 @@ def show_today():
     session['req_today_db'] = get_today_date()
 
     db = get_db_inst_of_day(get_today_date())
-    dat = [dict(id=r[0], hash=r[1], info=r[2], times=r[3], status=r[4], author=r[5])\
-            for r in db.get_crash_data()]
+    data = db.get_crash_data()
+    if data is None:
+        flash("There's no data in the database.")
+        return render_template('main.html', status=False, data=None)
+    dat = [dict(id=r[0], hash=r[1], info=r[2], times=r[3], status=r[4], author=r[5]) for r in data]
     t = db_update_time_to_str(db.get_last_update())
     return render_template('main.html', status=status, data=dat, time=t)
 

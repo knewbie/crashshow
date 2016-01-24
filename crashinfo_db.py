@@ -48,8 +48,7 @@ class Crash_Info_Model(object):
 
     def save_hash(self, hash_value='', count=0):
         cur = self.conn.cursor()
-        cur.execute('insert into hash_info (hash_value, count) values (?, ?)', \
-                (hash_value, count))
+        cur.execute('insert into hash_info (hash_value, count) values (?, ?)', (hash_value, count))
         self.conn.commit()
 
     def fetch_all_hash(self):
@@ -61,7 +60,7 @@ class Crash_Info_Model(object):
 
     def update(self, hash_value='', times=0):
         cur = self.conn.cursor()
-        cur.execute('update crash_info set times= ? where hash_value = ? ', (hash_value, times))
+        cur.execute('update crash_info set times= ? where hash_value = ? ', (times,hash_value))
         self.conn.commit()
 
     def close(self):

@@ -20,8 +20,21 @@ class DB_model(object):
         else:
             raise ValueError('date needed!!')
 
+    def _check_table_exist(self,tb_name=''):
+        conn = sqlite3.connect(self.dbname)
+        cur = conn.cursor()
+        tables = cur.execute("SELECT tbl_name FROM sqlite_master WHERE type = 'table'").fetchall()
+        conn.close()
+        if tb_name in [t[0] for t in tables]:
+            print "%s in tables" % tb_name
+            return True
+        print "%s  not in tables" % tb_name
+        return False
+
     def fetch_all_hash(self):
         data = {}
+        if not self._check_table_exist('hash_info'):
+            return None
         conn = sqlite3.connect(self.dbname)
         cur = conn.cursor()
         for row in cur.execute('select (hash_value,count) from hash_info').fetchall():
@@ -30,6 +43,8 @@ class DB_model(object):
         return data
 
     def get_crash_data(self):
+        if not self._check_table_exist('crash_info'):
+            return None
         conn = sqlite3.connect(self.dbname)
         cur = conn.cursor()
         rows = cur.execute("select * from crash_info").fetchall()
@@ -45,11 +60,13 @@ class DB_model(object):
         conn.close()
 
     def get_last_update(self):
+        if not self._check_table_exist('update_info'):
+            return None
         conn = sqlite3.connect(self.dbname)
         cur = conn.cursor()
-        row = cur.execute('select * from update_info order by id desc limit 1').fetchone()
+        row = cur.execute('select update_time from update_info where id=1').fetchone()
         conn.close()
-        return row
+        return row[0]
 
 
 class Crash_Info_Model(object):
@@ -83,16 +100,12 @@ class Crash_Info_Model(object):
             cur.execute('''
                     CREATE TABLE update_info (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    year INTEGER NOT NULL,
-                    month INTEGER NOT NULL,
-                    day INTEGER NOT NULL,
-                    hour INTEGER NOT NULL,
-                    min INTEGER NOT NULL,
-                    sec INTEGER NOT NULL,
-                    ms INTEGER NOT NULL);''')
+                    update_time REAL NOT NULL);''')
 
             self.conn.commit()
+            print "Create new db"
         else:
+            print "Just update the db"
             self.conn = sqlite3.connect(self.dbname)
             self.conn.text_factory = str
 
@@ -104,8 +117,7 @@ class Crash_Info_Model(object):
 
     def save_hash(self, hash_value='', count=0):
         cur = self.conn.cursor()
-        cur.execute('insert into hash_info (hash_value, count) values (?, ?)', \
-                (hash_value, count))
+        cur.execute('insert into hash_info (hash_value, count) values (?, ?)', (hash_value, count))
         self.conn.commit()
 
     def fetch_all_hash(self):
@@ -122,9 +134,7 @@ class Crash_Info_Model(object):
 
     def when_update(self):
         cur = self.conn.cursor()
-        d = datetime.datetime.now()
-        cur.execute('insert into update_info (year,month,day,hour,min,sec,ms) values (?,?,?,?,?,?,?)',\
-                (d.year, d.month, d.day, d.hour, d.minute, d.second, d.microsecond))
+        cur.execute('insert into update_info (update_time) values (?)', (time.time(),))
         self.conn.commit()
 
     def close(self):
