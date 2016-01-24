@@ -17,7 +17,7 @@ table .crash-text { text-align:left;}
 .update-time { margin:0 auto; text-align:center; height:50; color: #666; font-size:16px }
 .update-time span {  color:#F69; }
 
-.login  {width:40%; text-align:center;display:inline; float:right}
+.login  {text-align:center; float:right}
 
 .list { border-top:1px dotted #ccc;padding:1px; margin-top: 80px; text-align:center;}
 

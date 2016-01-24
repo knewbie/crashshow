@@ -1,6 +1,6 @@
+import os
 import time
 import datetime
-import os
 from db_utils import DB_model
 from data_collect import Extract
 
@@ -82,8 +82,10 @@ def check_today_db():
 def update_today_db():
     ''' update the datebase info '''
     today = get_today_date()
-    ext = Extract(today)
+    collect_today_data()
+    ext = Extract(today,data_path='/home/kevin/data_extract')
     ext.run_extract()
+    return True
 
 
 def check_upadte_elapse(pre):
@@ -105,3 +107,22 @@ def check_upadte_elapse(pre):
         return 1
     else:
         return 0, '%s-%02d-%02d %02d:%02d:%02d' %(pre.year,pre.month,pre.day,pre.hour,pre.minute,pre.second)
+
+
+def collect_today_data():
+    from shutil import copyfile
+    DATA_PATH = os.path.join('/home/kevin/data_extract',get_today_date())
+    if not os.path.exists(DATA_PATH):
+        os.mkdir(DATA_PATH)
+    src_dir = os.path.join('/home/kevin/data',get_today_date())
+    if not os.path.exists(src_dir):
+        raise ValueError("directory(%s) doesn't existed" % src)
+    files = os.listdir(DATA_PATH)
+    for k in os.listdir(src_dir):
+        if 'kof97' in k and k not in files:
+            copyfile(os.path.join(src_dir, k), os.path.join(DATA_PATH,k))
+        else:
+            print k
+
+
+

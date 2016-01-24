@@ -48,5 +48,4 @@ class All_db_model(object):
         conn.close()
         return rows
 
-
 db_handler = All_db_model(DB_NAME)

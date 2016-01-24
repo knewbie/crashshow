@@ -11,7 +11,7 @@ import re
 import datetime
 import string
 import hashlib
-from create_crashinfo_db import Crash_Info_Model, collect_db_info
+from crashinfo_db import Crash_Info_Model, collect_db_info
 
 # the key word used to find the crash in the log file
 # CEGUI::ScriptException: is a little special ,if found in the log file

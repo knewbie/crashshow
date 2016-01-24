@@ -40,7 +40,11 @@ def index():
 
 @app.route('/pulldata')
 def pulldata():
-    update_today_db()
+    ret = update_today_db()
+    if not ret:
+        flash("System is cllecting data,Please wait for minutes")
+        return render_template('main.html', status=False, data=None)
+
     status = check_today_db()
     flash('Data pull down, Click "Today" to check it!')
     return render_template('main.html', status=status, data=None)
