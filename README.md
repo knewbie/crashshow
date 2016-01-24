@@ -12,3 +12,6 @@ This project is very easy and  builded with Flask, so it's a exercise for
 my study Flask.During the coding, I have occurred many problems and overcome
 by reading the mannual.
 
+## Todo
+* add the auto backup the crashinfo when cross a day
+
