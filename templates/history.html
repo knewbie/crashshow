@@ -1,0 +1,60 @@
+{% extends 'layout.html' %}
+
+{% block list %}
+
+{% if days %}
+<div class="list">
+    <div class="row list-group" style="margin-top:3px;">
+        {% for d in days %}
+        <div class="col-xs-2">
+            <a class="list-group-item" href="{{ url_for('history_detail',date=d.date) }}" style='color:onion'> {{ d.date }} </a>
+        </div>
+        {% endfor %}
+    </div>
+</div> 
+{% endif %}
+
+{% endblock %}
+
+{% block detail %}
+<div class='content'>
+    {% if data %}
+    <h2> Detail Crash Info </h2>
+    <table class='table table-hover'>
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Info</th>
+                <th>Times</th>
+                <th>Status</th>
+                <th>Author</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data %}
+            <tr class= {% if item.status == 0 %}    "active"
+                       {% elif item.status == 1 %}  "warning" 
+                       {% elif item.status == 2 %}  "success"
+                       {% endif %} >
+               <td> {{ item.id }} </td>
+               {% autoescape false %}
+               <td class="crash-text"> {{ item.info }} </td>
+               {% endautoescape %}
+               <td> {{ item.times }} </td>
+               <td> {{ item.author }} </td>
+               {% if item.status == 0 %}
+               <td>TODO</td>
+               {% elif item.status == 1 %}
+               <td>DOING</td>
+               {% elif item.status == 2 %}
+               <td>DONE</td>
+               {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+</div>
+
+{% endblock %}

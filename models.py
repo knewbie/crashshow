@@ -25,7 +25,7 @@ class All_db_model(object):
                     """)
 
     def get_one_day_info(self, date):
-        conn = sqlite3.connect(self.db_name, 10)
+        conn = sqlite3.connect(self.db_name)
         cur = conn.cursor()
         row = cur.execute('select dbname from all_db_info where dbdate = ?', (date,)).fetchone()
         cur.close()
@@ -33,7 +33,7 @@ class All_db_model(object):
         return row
 
     def get_recent_day_info(self, ndays):
-        conn = sqlite3.connect(self.db_name, 10)
+        conn = sqlite3.connect(self.db_name)
         cur = conn.cursor()
         rows = cur.execute("select dbname from all_db_info order by dbdate desc limit ?", (ndays,)).fetchall()
         cur.close()
@@ -41,11 +41,19 @@ class All_db_model(object):
         return rows
 
     def get_all(self):
-        conn = sqlite3.connect(self.db_name, 10)
+        conn = sqlite3.connect(self.db_name)
         cur = conn.cursor()
-        rows = cur.execute("select dbdate from all_db_info order by dbdate desc").fetchall()
+        rows = cur.execute("select dbname, create_time from all_db_info order by dbdate desc").fetchall()
         cur.close()
         conn.close()
         return rows
+
+    def delete(self, dbname):
+        conn = sqlite3.connect(self.db_name)
+        cur = conn.cursor()
+        cur.execute("delete from all_db_info where dbname=?", (dbname,))
+        conn.commit()
+        conn.close()
+
 
 db_handler = All_db_model(DB_NAME)

@@ -31,7 +31,6 @@ app.config.from_object(__name__)
 
 @app.route('/')
 def index():
-
     status = check_today_db()
     if not status:
         flash("Today's data hasn't be create, Please Create It now")
@@ -86,22 +85,6 @@ def update():
         return redirect(url_for('show_today'))
 
 
-@app.route('/show_detail/<date>', methods=['GET'])
-def show_detail(date):
-    row = db_handler.get_one_day_info(time_str_to_int(date))
-    print date, time_str_to_int(date)
-    if not row:
-        flash("No data of the day( %s )" % date)
-        return redirect(url_for('index'))
-
-    session['req_today_db'] = row[0]
-    db = get_db_inst_of_day(row[0])
-
-    data = [dict(id=r[0], hash=r[1], info=r[2], times=r[3], status=r[4], author=r[5])
-            for r in db.get_crash_data()]
-    return render_template('detail.html', data=data)
-
-
 @app.route('/takeit/<id>', methods=['GET'])
 def takeit(id):
     if not session.get('login_in'):
@@ -140,12 +123,35 @@ def doit(id):
 
 @app.route('/history')
 def history():
-    #rows = db_handler.get_all()
-    #entries = [dict(date=time_int_to_str(row[0])) for row in rows]
-    #return render_template('main.html', entries=entries)
-    
-    flash("Coming soon...")
-    return redirect(url_for('index'))
+    rows = db_handler.get_all()
+    days = []
+    for r in rows:
+        if r[1] == get_today_date():
+            continue
+        if os.path.isfile(r[0]):
+            days.append(dict(date=r[1]))
+        else:
+            db_handler.delete(r[0])
+
+    if len(days) == 0:
+        flash("There is no history data to check")
+        return redirect(url_for('index'))
+    return render_template('history.html', days=days, data=None)
+
+
+@app.route('/history_detail/<date>', methods=['GET'])
+def history_detail(date):
+    db = get_db_inst_of_day(date)
+    rows = db.get_crash_data()
+    if not rows:
+        flash("No data of the day( %s )" % date)
+        return redirect(url_for('history'))
+
+    days = [dict(date=r[1]) for r in db_handler.get_all() if r[1] != get_today_date()]
+
+    data = [dict(id=r[0], info=r[2], times=r[3], status=r[4], author=r[5])
+            for r in rows]
+    return render_template('history.html', days=days, data=data)
 
 
 @app.route('/login', methods=['POST'])
@@ -177,5 +183,5 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run("0.0.0.0")
-    #app.run(debug=True)
+    #app.run("0.0.0.0")
+    app.run(debug=True)
