@@ -103,9 +103,19 @@ class Crash_Info_Model(object):
                     update_time REAL NOT NULL);''')
 
             self.conn.commit()
-            print "Create new db"
+            # store the new db info into the all_db_info database
+            all_db_name = ''.join([DB_PATH,'all_db_info.db'])
+            if not os.path.isfile(db):
+                print "Wrong db file: %s" % all_db_name
+                sys.eixt(1)
+            db = sqlite3.connect(all_db_name, 2)
+            db.text_factory = str
+            cur = db.cursor()
+            cur.execute("insert into all_db_info (dbdate,dbname,create_time) values (?,?,?)",\
+                    (time.mktime(time.strptime(date, "%Y-%m-%d")), self.dbname, date))
+            db.commit()
+            db.close()
         else:
-            print "Just update the db"
             self.conn = sqlite3.connect(self.dbname)
             self.conn.text_factory = str
 

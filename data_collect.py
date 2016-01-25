@@ -16,7 +16,7 @@ class Extract(object):
         r'CEGUI::InvalidRequestException',
         r'CEGUI::ScriptException',
         r'LUA ERROR']
-    DATA_PATH='/Users/kevin/project/toys/'
+    DATA_PATH='/home/m-out-ll/crash_data'
 
     def __init__(self, date='', data_path=''):
         self.data_dir = os.path.join(data_path or Extract.DATA_PATH, date)

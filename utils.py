@@ -76,7 +76,7 @@ def update_today_db():
     ''' update the datebase info '''
     today = get_today_date()
     collect_today_data()
-    ext = Extract(today,data_path='/home/kevin/data_extract')
+    ext = Extract(today)
     ext.run_extract()
     return True
 
@@ -104,10 +104,10 @@ def check_upadte_elapse(pre):
 
 def collect_today_data():
     from shutil import copyfile
-    DATA_PATH = os.path.join('/home/kevin/data_extract',get_today_date())
+    DATA_PATH = os.path.join('/home/m-out-ll/crash_data',get_today_date())
     if not os.path.exists(DATA_PATH):
         os.mkdir(DATA_PATH)
-    src_dir = os.path.join('/home/kevin/data',get_today_date())
+    src_dir = os.path.join('/export/dump/backup',get_today_date())
     if not os.path.exists(src_dir):
         raise ValueError("directory(%s) doesn't existed" % src)
     files = os.listdir(DATA_PATH)
