@@ -105,7 +105,7 @@ class Crash_Info_Model(object):
             self.conn.commit()
             # store the new db info into the all_db_info database
             all_db_name = ''.join([DB_PATH,'all_db_info.db'])
-            if not os.path.isfile(db):
+            if not os.path.isfile(all_db_name):
                 print "Wrong db file: %s" % all_db_name
                 sys.eixt(1)
             db = sqlite3.connect(all_db_name, 2)
