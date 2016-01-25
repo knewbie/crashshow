@@ -93,7 +93,10 @@ def check_upadte_elapse(pre):
                         2 => cross day
     '''
     now = datetime.now()
-    pre = pre and datetime.fromtimestamp(pre) or datetime.now()
+    if pre:
+        pre = datetime.fromtimestamp(pre)
+    else:
+        pre = datetime.now()
     dif = datetime(1970, 1, 1) + (now - pre)
     if now.day != pre.day:
         return 2
