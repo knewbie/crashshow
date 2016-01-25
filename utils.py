@@ -113,4 +113,6 @@ def collect_today_data():
     files = os.listdir(DATA_PATH)
     for k in os.listdir(src_dir):
         if 'kof97' in k and k not in files:
-            copyfile(''.join([src_dir,'/', k,'/','ledo_game.log']), ''.join([DATA_PATH,'/',k,'_ledo_game.log']))
+            f = ''.join([src_dir, '/', k, '/', 'ledo_game.log'])
+            if os.path.isfile(f):
+                copyfile(f, ''.join([DATA_PATH, '/', k, '_ledo_game.log']))
