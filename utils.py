@@ -113,4 +113,4 @@ def collect_today_data():
     files = os.listdir(DATA_PATH)
     for k in os.listdir(src_dir):
         if 'kof97' in k and k not in files:
-            copyfile(''.join([src_dir, k]), ''.join([DATA_PATH,k]))
+            copyfile(''.join([src_dir,'/', k]), ''.join([DATA_PATH,'/',k]))
