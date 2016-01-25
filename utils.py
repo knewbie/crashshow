@@ -109,8 +109,8 @@ def collect_today_data():
         os.mkdir(DATA_PATH)
     src_dir = os.path.join('/export/dump/backup',get_today_date())
     if not os.path.exists(src_dir):
-        raise ValueError("directory(%s) doesn't existed" % src)
+        raise ValueError("directory(%s) doesn't existed" % src_dir)
     files = os.listdir(DATA_PATH)
     for k in os.listdir(src_dir):
         if 'kof97' in k and k not in files:
-            copyfile(os.path.join(src_dir, k), os.path.join(DATA_PATH,k))
+            copyfile(''.join([src_dir, k]), ''.join([DATA_PATH,k]))
