@@ -1,5 +1,6 @@
 import os
 import time
+from shutil import copyfile, rmtree
 from datetime import datetime, timedelta
 from db_utils import DB_model
 from data_collect import Extract
@@ -116,3 +117,24 @@ def collect_today_data():
             f = ''.join([src_dir, '/', k, '/', 'ledo_game.log'])
             if os.path.isfile(f):
                 copyfile(f, ''.join([DATA_PATH, '/', k, '_ledo_game.log']))
+
+
+def collect_history_data(date=''):
+    root = '/export/dump/backup'
+    for d in os.listdir(root):
+        if d != get_today_date():
+            DATA_PATH = os.path.join('/home/m-out-ll/crash_data', d)
+            if not os.path.exists(DATA_PATH):
+                os.mkdir(DATA_PATH)
+            src_dir = os.path.join(root, d)
+            if not os.path.exists(src_dir):
+                continue
+            for k in os.listdir(src_dir):
+                if 'kof97' in k:
+                    f = ''.join([src_dir, '/', k, '/', 'ledo_game.log'])
+                    if os.path.isfile(f):
+                        copyfile(f, ''.join([DATA_PATH, '/', k, '_ledo_game.log']))
+
+            ext = Extract(d)
+            ext.run_extract()
+            rmtree(DATA_PATH, True)
