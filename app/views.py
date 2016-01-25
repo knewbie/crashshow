@@ -54,15 +54,15 @@ def show_today():
 @app.route('/update')
 def update():
     db = get_db_inst_of_day(get_today_date())
-    pre = db.get_last_update()
-    ret, t = check_upadte_elapse(pre)
-    if ret == 2:
+    ts = db.get_last_update()
+    ret = check_upadte_elapse(ts)
+    if ret[0] == 2:
         flash("A new day has begin, Please Create the New db")
         return render_template('main.html', status=False, data=None)
-    elif ret == 0:
-        warn = ["Don't update so often !", "Last update:  %s" % t]
+    elif ret[0] == 0:
+        warn = ["Don't update so often !", "Last update:  %s" % ret[1]]
         return render_template('main.html', status=True, data=None, warn=warn)
-    elif ret == 1:
+    elif ret[0] == 1:
         update_today_db()
         flash("Refresh today info")
         return redirect(url_for('show_today'))

@@ -82,7 +82,7 @@ def update_today_db():
     return True
 
 
-def check_upadte_elapse(pre):
+def check_upadte_elapse(ts):
     ''' check if can update with 2 hours elapse
         if cross day, that will not allowed to
         update even the elapse is over 2 hours.
@@ -93,15 +93,16 @@ def check_upadte_elapse(pre):
                         2 => cross day
     '''
     now = datetime.now()
-    if pre:
-        pre = datetime.fromtimestamp(pre)
+    pre = None
+    if ts:
+        pre = datetime.fromtimestamp(ts)
     else:
         pre = datetime.now()
     dif = datetime(1970, 1, 1) + (now - pre)
     if now.day != pre.day:
-        return 2
+        return 2,
     elif dif.hour > 2:
-        return 1
+        return 1,
     else:
         return 0, '%s-%02d-%02d %02d:%02d:%02d' %(pre.year,pre.month,pre.day,pre.hour,pre.minute,pre.second)
 
