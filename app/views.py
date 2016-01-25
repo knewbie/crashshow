@@ -1,32 +1,15 @@
 # -*-:coding = utf-8 -*-
-
-from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
+from app import app
+from flask import request, session,  redirect, url_for,  render_template, flash
 from models import db_handler
 from utils import *
 
-DEBGU = True
-SECRET_KEY = 'test key'
- 
 user_dict = {
         'admin':'admin',
         'kevin':'kevinlee',
         'lwn':'lwn1234',
         'ff':'ff1234',
         'mxc':'mxc1234'}
-
-
-app = Flask(__name__)
-app.config.from_object(__name__)
-
-
-# @app.before_request
-# def before_request():
-    # g.db = connect_db()
-
-
-# @app.teardown_request
-# def teardown_request(exception):
-    # db.close()
 
 
 @app.route('/')
@@ -178,10 +161,3 @@ def logout():
     #session.pop('req_today_db', None)
     flash('You have signed out.')
     return redirect(url_for('index'))
-
-
-
-
-if __name__ == '__main__':
-    #app.run("0.0.0.0")
-    app.run(debug=True)

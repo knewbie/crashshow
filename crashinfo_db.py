@@ -87,3 +87,18 @@ def collect_db_info(dbname,dbdate):
     db.commit()
     db.close()
     print "insert all_db_info (%s)" % dbname
+
+
+def create_test_data(i):
+    s = "2016-01-%02d" % i
+    dbname = './db/'+s+'.db'
+    db = sqlite3.connect(dbname)
+    db.close()
+    db = sqlite3.connect('./db/all_db_info.db')
+    cur = db.cursor()
+    cur.execute("insert into all_db_info (dbdate,dbname,create_time) values (?,?,?)",\
+            (time.mktime(time.strptime(s, "%Y-%m-%d")), dbname,s))
+    db.commit()
+    db.close()
+    print "insert all_db_info (%s)" % dbname
+
