@@ -152,5 +152,5 @@ def collect_oneday(d):
                 copyfile(f, ''.join([data_path, '/', k, '_ledo_game.log']))
 
     ext = Extract(d, DATA_DEST_ROOT)
-    ext.run_extract()
+    ext.run_extract_dir()
     rmtree(data_path, True)
