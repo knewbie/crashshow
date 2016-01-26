@@ -46,7 +46,8 @@ def show_today():
     if data is None:
         flash("There's no data in the database.")
         return render_template('main.html', status=False, data=None)
-    dat = [dict(id=r[0], hash=r[1], info=r[2], times=r[3], status=r[4], author=r[5]) for r in data]
+    
+    dat = [dict(id=r+1, hash=data[r][1], info=data[r][2], times=data[r][3], status=data[r][4], author=data[r][5]) for r in range(len(data))]
     t = db_update_time_to_str(db.get_last_update())
     return render_template('main.html', status=status, data=dat, time=t)
 

@@ -46,7 +46,7 @@ class DB_model(object):
             return None
         conn = sqlite3.connect(self.dbname)
         cur = conn.cursor()
-        rows = cur.execute("select * from crash_info").fetchall()
+        rows = cur.execute("select * from crash_info order by times desc").fetchall()
         conn.close()
         return rows
 
