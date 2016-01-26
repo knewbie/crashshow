@@ -94,10 +94,7 @@ def update_today_db(update=False):
                 new_name = ''.join([data_path, '/', f])
                 copyfile(src_file, new_name)
                 if update:
-                    print 'update: ', new_name
                     ext.run_extract_file(new_name)
-        else:
-            print 'Have dealed: ', f
 
     if not update:
         ext.run_extract_dir()
@@ -126,7 +123,7 @@ def check_upadte_elapse(ts):
     dif = datetime(1970, 1, 1) + (now - pre)
     if now.day != pre.day:
         return 2,
-    elif dif.minute > 5:
+    elif dif.hour > 1:
         return 1,
     else:
         return 0, '%s-%02d-%02d %02d:%02d:%02d' %(pre.year,pre.month,pre.day,pre.hour,pre.minute,pre.second)
