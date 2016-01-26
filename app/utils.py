@@ -87,14 +87,17 @@ def update_today_db(update=False):
         raise ValueError("directory(%s) doesn't existed" % src_dir)
     files = os.listdir(data_path)
     for k in os.listdir(src_dir):
-        if 'kof97' in k and k not in files:
+        f = ''.join(k, '_ledo_game.log')
+        if 'kof97' in k and f not in files:
             f = ''.join([src_dir, '/', k, '/', 'ledo_game.log'])
             if os.path.isfile(f):
-                new_name = ''.join([data_path, '/', k, '_ledo_game.log'])
+                new_name = ''.join([data_path, '/', f])
                 copyfile(f, new_name)
                 if update:
                     print 'update: ', new_name
                     ext.run_extract_file(new_name)
+        else:
+            print 'Have dealed: ', f
 
     if not update:
         ext.run_extract_dir()
