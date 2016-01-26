@@ -34,7 +34,6 @@ def update_interval_job():
     logging.info('end update data')
 
 
-
 def cron_test():
     print "cron_test"
     pre = datetime.now() - timedelta(1)
@@ -43,15 +42,10 @@ def cron_test():
 
 if __name__ == '__main__':
     sched = BlockingScheduler()
-    #sched.add_job(update_interval_job, 'interval', hours=1)
-    #sched.add_job(backup_yestoday_job, 'cron', day_of_week='0-6', hour=0, minute=2, start_date="2016-01-27")
+    sched.add_job(update_interval_job, 'interval', hours=1)
+    sched.add_job(backup_yestoday_job, 'cron', day_of_week='0-6', hour=0, minute=2, start_date="2016-01-27")
 
-    sched.add_job(interval_test, 'interval', seconds=5)
-    sched.add_job(cron_test, 'cron', minute='0-59', start_date='2016-01-26')
+    #sched.add_job(interval_test, 'interval', seconds=5)
+    #sched.add_job(cron_test, 'cron', minute='0-59', start_date='2016-01-26')
 
     sched.start()
-
-
-# one job to refresh every one hour
-# one job to collect the whole data on 58:00 of every day
-# ref: http://debugo.com/apscheduler/
