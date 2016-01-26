@@ -87,7 +87,7 @@ def update_today_db(update=False):
         raise ValueError("directory(%s) doesn't existed" % src_dir)
     files = os.listdir(data_path)
     for k in os.listdir(src_dir):
-        f = ''.join(k, '_ledo_game.log')
+        f = ''.join([k, '_ledo_game.log'])
         if 'kof97' in k and f not in files:
             f = ''.join([src_dir, '/', k, '/', 'ledo_game.log'])
             if os.path.isfile(f):
