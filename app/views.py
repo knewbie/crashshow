@@ -130,11 +130,11 @@ def history_detail(date):
         flash("No data of the day( %s )" % date)
         return redirect(url_for('history'))
 
-    days = [dict(date=r[1]) for r in db_handler.get_all() if r[1] != get_today_date()]
+    all_days = [dict(date=r[1]) for r in db_handler.get_all() if r[1] != get_today_date()]
 
     data = [dict(id=r[0], info=r[2], times=r[3], status=r[4], author=r[5])
             for r in rows]
-    return render_template('history.html', days=days, data=data)
+    return render_template('history.html', all_days=all_days, data=data, day=date)
 
 
 @app.route('/login', methods=['POST'])
