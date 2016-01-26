@@ -74,12 +74,30 @@ def check_today_db():
     return True
 
 
-def update_today_db():
+def update_today_db(update=False):
     ''' update the datebase info '''
     today = get_today_date()
-    collect_today_data()
     ext = Extract(today, DATA_DEST_ROOT)
-    ext.run_extract()
+
+    data_path = os.path.join(DATA_DEST_ROOT, get_today_date())
+    if not os.path.exists(data_path):
+        os.mkdir(data_path)
+    src_dir = os.path.join(DATA_SRC_ROOT, get_today_date())
+    if not os.path.exists(src_dir):
+        raise ValueError("directory(%s) doesn't existed" % src_dir)
+    files = os.listdir(data_path)
+    for k in os.listdir(src_dir):
+        if 'kof97' in k and k not in files:
+            f = ''.join([src_dir, '/', k, '/', 'ledo_game.log'])
+            if os.path.isfile(f):
+                new_name = ''.join([data_path, '/', k, '_ledo_game.log'])
+                copyfile(f, new_name)
+                if update:
+                    print 'update: ', new_name
+                    ext.run_extract_file(new_name)
+
+    if not update:
+        ext.run_extract_dir()
     return True
 
 
@@ -102,26 +120,10 @@ def check_upadte_elapse(ts):
     dif = datetime(1970, 1, 1) + (now - pre)
     if now.day != pre.day:
         return 2,
-    elif dif.hour > 2:
+    elif dif.minute > 5:
         return 1,
     else:
         return 0, '%s-%02d-%02d %02d:%02d:%02d' %(pre.year,pre.month,pre.day,pre.hour,pre.minute,pre.second)
-
-
-def collect_today_data():
-    from shutil import copyfile
-    data_path = os.path.join(DATA_DEST_ROOT, get_today_date())
-    if not os.path.exists(data_path):
-        os.mkdir(data_path)
-    src_dir = os.path.join(DATA_SRC_ROOT, get_today_date())
-    if not os.path.exists(src_dir):
-        raise ValueError("directory(%s) doesn't existed" % src_dir)
-    files = os.listdir(data_path)
-    for k in os.listdir(src_dir):
-        if 'kof97' in k and k not in files:
-            f = ''.join([src_dir, '/', k, '/', 'ledo_game.log'])
-            if os.path.isfile(f):
-                copyfile(f, ''.join([data_path, '/', k, '_ledo_game.log']))
 
 
 def collect_history_data():

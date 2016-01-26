@@ -144,13 +144,22 @@ class Extract(object):
 
 
 
-    def run_extract(self):
+    def run_extract_dir(self):
         for f in os.listdir(self.data_dir):
             self._extrct_crash_info(os.path.join(self.data_dir, f))
 
         # write back all the hash value
         for k, v in self.hash_value.items():
             self.db.save_hash(k, v)
+
+        self.db.when_update()
+        self.db.close()
+
+    def run_extract_file(self, fname):
+        self._extrct_crash_info(fname)
+
+        for k, v in self.hash_value.items():
+            self.db.update_hash(k, v)
 
         self.db.when_update()
         self.db.close()

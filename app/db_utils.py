@@ -128,6 +128,11 @@ class Crash_Info_Model(object):
         cur = self.conn.cursor()
         cur.execute('insert into hash_info (hash_value, count) values (?, ?)', (hash_value, count))
         self.conn.commit()
+    
+    def update_hash(self, hash_value, count):
+        cur = self.conn.cursor()
+        cur.execute('update hash_info set count=? where hash_value=?',(count, hash_value))
+        self.conn.commit()
 
     def fetch_all_hash(self):
         data = {}
