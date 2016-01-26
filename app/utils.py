@@ -4,7 +4,10 @@ from shutil import copyfile, rmtree
 from datetime import datetime, timedelta
 from db_utils import DB_model
 from data_collect import Extract
-from ..config import DATA_DEST_ROOT, DATA_SRC_ROOT
+
+DATA_SRC_ROOT = '/export/dump/backup'
+DATA_DEST_ROOT = '/home/m-out-ll/crash_data'
+
 
 def time_str_to_int(t=''):
     '''
