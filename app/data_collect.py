@@ -11,15 +11,15 @@ class Extract(object):
 
     """
 
-    key_words = [r'CEGUI::UnknownObjectException',
+    key_words = [  r'CEGUI::UnknownObjectException',
         r'CEGUI::AlreadyExistsException',
         r'CEGUI::InvalidRequestException',
         r'CEGUI::ScriptException',
-        r'LUA ERROR']
-    DATA_PATH='/home/m-out-ll/crash_data'
+        r'LUA ERROR'
+      ]
 
     def __init__(self, date='', data_path=''):
-        self.data_dir = os.path.join(data_path or Extract.DATA_PATH, date)
+        self.data_dir = os.path.join(data_path, date)
         if not os.path.exists(self.data_dir):
             os.mkdir(self.data_dir)
         self.db = Crash_Info_Model(date)
@@ -45,6 +45,7 @@ class Extract(object):
         cnt = 0
         temp = []
         lua_temp = []
+        lua_hash = {}
 
         with open(fname) as f:
             for line in f.readlines():
@@ -68,8 +69,9 @@ class Extract(object):
                         temp = []
                     continue
 
-                ret, special = self._check_match_it(line)
-                if ret:
+                ret = self._check_match_it(line)
+                if ret[0]:
+                    special = ret[1]
                     line_seq = line.split(' ')
                     s = ' '.join(line_seq[2:])
                     if special == 0:
@@ -84,7 +86,14 @@ class Extract(object):
                         temp.append(s)
                     else:
                         s = line[63:]
-                        lua_temp.append(s.strip())
+                        s = s.strip()
+                        hval = hashlib.md5(s).hexdigest()
+                        if hval not in lua_hash and s not in lua_temp:
+                            lua_hash[hval] = 1
+                            lua_temp.append(s.strip())
+                        else:
+                            lua_hash[hval] += 1
+                        ret, special = False, -1
                     continue
 
                 if len(lua_temp) > 0:
@@ -92,16 +101,52 @@ class Extract(object):
                     s = '<br/>'.join(lua_temp)
                     hval = hashlib.md5(s).hexdigest()
                     if hval not in self.hash_value:
-                        self.hash_value[hval] = 1
-                        self.db.save_info(hval, s, 1, 0)
+                        if len(lua_temp) == 1:
+                            aa = hashlib.md5(lua_temp[0]).hexdigest()
+                            self.hash_value[hval] = lua_hash[aa]
+                        else:
+                            self.hash_value[hval] = 1
+                        self.db.save_info(hval, s,  self.hash_value[hval], 0)
                     else:
-                        self.hash_value[hval] += 1
+                        if len(lua_temp) == 1:
+                            aa = hashlib.md5(lua_temp[0]).hexdigest()
+                            self.hash_value[hval] = lua_hash[aa]
+                        else:
+                            self.hash_value[hval] += 1
                         self.db.update(hval, self.hash_value[hval])
                     lua_temp = []
+                    lua_hash = {}
+            # the last process
+            if len(temp) > 0:
+                s = ''.join(temp)
+                hval = hashlib.md5(s).hexdigest()
+                if hval not in self.hash_value:
+                    self.hash_value[hval] = 1
+                    self.db.save_info(hval, s, 1, 0)
+                else:
+                    self.hash_value[hval] += 1
+                    self.db.update(hval, self.hash_value[hval])
+                temp = []
+            if len(lua_temp) > 0:
+                ret, special = False, -1
+                s = '<br/>'.join(lua_temp)
+                hval = hashlib.md5(s).hexdigest()
+                if hval not in self.hash_value:
+                    if len(lua_hash) == 1:
+                        self.hash_value[hval] = lua_hash[hashlib.md5(lua_temp[0]).hexdigest()]
+                    else:
+                        self.hash_value[hval] = 1
+                    self.db.save_info(hval, s,  self.hash_value[hval], 0)
+                else:
+                    self.hash_value[hval] += 1
+                    self.db.update(hval, self.hash_value[hval])
+                lua_temp = {}
+
+
 
     def run_extract(self):
         for f in os.listdir(self.data_dir):
-            self._extrct_crash_info(os.path.join(self.data_dir,f))
+            self._extrct_crash_info(os.path.join(self.data_dir, f))
 
         # write back all the hash value
         for k, v in self.hash_value.items():

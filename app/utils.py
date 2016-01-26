@@ -4,9 +4,7 @@ from shutil import copyfile, rmtree
 from datetime import datetime, timedelta
 from db_utils import DB_model
 from data_collect import Extract
-
-DATA_SRC_ROOT = '/export/dump/backup'
-DATA_DEST_ROOT = '/home/m-out-ll/crash_data'
+from config import DATA_SRC_ROOT, DATA_DEST_ROOT
 
 
 def time_str_to_int(t=''):
@@ -80,7 +78,7 @@ def update_today_db():
     ''' update the datebase info '''
     today = get_today_date()
     collect_today_data()
-    ext = Extract(today)
+    ext = Extract(today, DATA_DEST_ROOT)
     ext.run_extract()
     return True
 
@@ -129,24 +127,25 @@ def collect_today_data():
 def collect_history_data():
     if not os.path.exists(DATA_SRC_ROOT):
         raise ValueError("Wrong directory: %s" % DATA_SRC_ROOT)
-    for d in os.listdir(DATA_SRC_ROOT):
+    dirs = os.listdir(DATA_SRC_ROOT)
+    dirs.remove(get_today_date())  # remove today
+    for d in dirs:
         collect_oneday(d)
 
 
 def collect_oneday(d):
-    if d != get_today_date():
-        data_path = os.path.join(DATA_DEST_ROOT, d)
-        if not os.path.exists(data_path):
-            os.mkdir(data_path)
-        src_dir = os.path.join(DATA_SRC_ROOT, d)
-        if not os.path.exists(src_dir):
-            raise ValueError("Wrong directory: %s" % src_dir)
-        for k in os.listdir(src_dir):
-            if 'kof97' in k:
-                f = ''.join([src_dir, '/', k, '/', 'ledo_game.log'])
-                if os.path.isfile(f):
-                    copyfile(f, ''.join([data_path, '/', k, '_ledo_game.log']))
+    data_path = os.path.join(DATA_DEST_ROOT, d)
+    if not os.path.exists(data_path):
+        os.mkdir(data_path)
+    src_dir = os.path.join(DATA_SRC_ROOT, d)
+    if not os.path.exists(src_dir):
+        raise ValueError("Wrong directory: %s" % src_dir)
+    for k in os.listdir(src_dir):
+        if 'kof97' in k:
+            f = ''.join([src_dir, '/', k, '/', 'ledo_game.log'])
+            if os.path.isfile(f):
+                copyfile(f, ''.join([data_path, '/', k, '_ledo_game.log']))
 
-        ext = Extract(d)
-        ext.run_extract()
-        rmtree(data_path, True)
+    ext = Extract(d, DATA_DEST_ROOT)
+    ext.run_extract()
+    rmtree(data_path, True)

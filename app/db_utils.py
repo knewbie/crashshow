@@ -138,7 +138,7 @@ class Crash_Info_Model(object):
 
     def update(self, hash_value='', times=0):
         cur = self.conn.cursor()
-        cur.execute('update crash_info set times= ? where hash_value = ? ', (hash_value, times))
+        cur.execute('update crash_info set times=(?) where hash_value =(?)', (times, hash_value))
         self.conn.commit()
 
     def when_update(self):
