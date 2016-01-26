@@ -4,7 +4,7 @@ from shutil import copyfile, rmtree
 from datetime import datetime, timedelta
 from db_utils import DB_model
 from data_collect import Extract
-
+from ..config import DATA_DEST_ROOT, DATA_SRC_ROOT
 
 def time_str_to_int(t=''):
     '''
@@ -109,36 +109,41 @@ def check_upadte_elapse(ts):
 
 def collect_today_data():
     from shutil import copyfile
-    DATA_PATH = os.path.join('/home/m-out-ll/crash_data',get_today_date())
-    if not os.path.exists(DATA_PATH):
-        os.mkdir(DATA_PATH)
-    src_dir = os.path.join('/export/dump/backup',get_today_date())
+    data_path = os.path.join(DATA_DEST_ROOT, get_today_date())
+    if not os.path.exists(data_path):
+        os.mkdir(data_path)
+    src_dir = os.path.join(DATA_SRC_ROOT, get_today_date())
     if not os.path.exists(src_dir):
         raise ValueError("directory(%s) doesn't existed" % src_dir)
-    files = os.listdir(DATA_PATH)
+    files = os.listdir(data_path)
     for k in os.listdir(src_dir):
         if 'kof97' in k and k not in files:
             f = ''.join([src_dir, '/', k, '/', 'ledo_game.log'])
             if os.path.isfile(f):
-                copyfile(f, ''.join([DATA_PATH, '/', k, '_ledo_game.log']))
+                copyfile(f, ''.join([data_path, '/', k, '_ledo_game.log']))
 
 
-def collect_history_data(date=''):
-    root = '/export/dump/backup'
-    for d in os.listdir(root):
-        if d != get_today_date():
-            DATA_PATH = os.path.join('/home/m-out-ll/crash_data', d)
-            if not os.path.exists(DATA_PATH):
-                os.mkdir(DATA_PATH)
-            src_dir = os.path.join(root, d)
-            if not os.path.exists(src_dir):
-                continue
-            for k in os.listdir(src_dir):
-                if 'kof97' in k:
-                    f = ''.join([src_dir, '/', k, '/', 'ledo_game.log'])
-                    if os.path.isfile(f):
-                        copyfile(f, ''.join([DATA_PATH, '/', k, '_ledo_game.log']))
+def collect_history_data():
+    if not os.path.exists(DATA_SRC_ROOT):
+        raise ValueError("Wrong directory: %s" % DATA_SRC_ROOT)
+    for d in os.listdir(DATA_SRC_ROOT):
+        collect_oneday(d)
 
-            ext = Extract(d)
-            ext.run_extract()
-            rmtree(DATA_PATH, True)
+
+def collect_oneday(d):
+    if d != get_today_date():
+        data_path = os.path.join(DATA_DEST_ROOT, d)
+        if not os.path.exists(data_path):
+            os.mkdir(data_path)
+        src_dir = os.path.join(DATA_SRC_ROOT, d)
+        if not os.path.exists(src_dir):
+            raise ValueError("Wrong directory: %s" % src_dir)
+        for k in os.listdir(src_dir):
+            if 'kof97' in k:
+                f = ''.join([src_dir, '/', k, '/', 'ledo_game.log'])
+                if os.path.isfile(f):
+                    copyfile(f, ''.join([data_path, '/', k, '_ledo_game.log']))
+
+        ext = Extract(d)
+        ext.run_extract()
+        rmtree(data_path, True)
