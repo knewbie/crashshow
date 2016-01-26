@@ -2,13 +2,13 @@
 
 {% block list %}
 
-{% if days %}
+{% if all_days %}
 <div class="list">
     <div class="row list-group" style="margin-top:3px;">
         <div class="col-xs-2">
             <a class="list-group-item" href="{{ url_for('index') }}" style="color:red">Home</a>
         </div>
-        {% for d in days %}
+        {% for d in all_days %}
         <div class="col-xs-2">
             <a class="list-group-item" href="{{ url_for('history_detail',date=d.date) }}" style='color:onion'> {{ d.date }} </a>
         </div>
@@ -22,7 +22,7 @@
 {% block detail %}
 <div class='content'>
     {% if data %}
-    <h2> Detail Crash Info </h2>
+    <h2> Detail Crash Info <strong>( {{day}} )</strong></h2>
     <table class='table table-hover'>
         <thead>
             <tr>
