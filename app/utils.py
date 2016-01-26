@@ -89,10 +89,10 @@ def update_today_db(update=False):
     for k in os.listdir(src_dir):
         f = ''.join([k, '_ledo_game.log'])
         if 'kof97' in k and f not in files:
-            f = ''.join([src_dir, '/', k, '/', 'ledo_game.log'])
-            if os.path.isfile(f):
+            src_file = ''.join([src_dir, '/', k, '/', 'ledo_game.log'])
+            if os.path.isfile(src_file):
                 new_name = ''.join([data_path, '/', f])
-                copyfile(f, new_name)
+                copyfile(src_file, new_name)
                 if update:
                     print 'update: ', new_name
                     ext.run_extract_file(new_name)
