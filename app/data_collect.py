@@ -152,14 +152,12 @@ class Extract(object):
         for k, v in self.hash_value.items():
             self.db.save_hash(k, v)
 
-        self.db.when_update()
-        self.db.close()
-
     def run_extract_file(self, fname):
         self._extrct_crash_info(fname)
 
         for k, v in self.hash_value.items():
             self.db.update_hash(k, v)
 
+    def run_end(self):
         self.db.when_update()
         self.db.close()

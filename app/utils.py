@@ -98,6 +98,9 @@ def update_today_db(update=False):
 
     if not update:
         ext.run_extract_dir()
+
+    ext.run_end()
+
     return True
 
 
