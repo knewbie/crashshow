@@ -24,28 +24,19 @@ def backup_yestoday_job():
     data_dir = os.path.join(DATA_DEST_ROOT, d)
     if os.path.exists(data_dir):
         rmtree(data_dir)
+        logging.info('Remove dir: %s' % data_dir)
 
     logging.info('backup data end')
 
 
 def update_interval_job():
-    logging.info( "begin update data")
+    logging.info("begin update data")
     update_today_db(True)
     logging.info('end update data')
 
 
-def cron_test():
-    print "cron_test"
-    pre = datetime.now() - timedelta(1)
-    d = pre.strftime("%Y-%m-%d")
-
-
 if __name__ == '__main__':
     sched = BlockingScheduler()
-    sched.add_job(update_interval_job, 'interval', hours=1)
-    sched.add_job(backup_yestoday_job, 'cron', day_of_week='0-6', hour=0, minute=2, start_date="2016-01-27")
-
-    #sched.add_job(interval_test, 'interval', seconds=5)
-    #sched.add_job(cron_test, 'cron', minute='0-59', start_date='2016-01-26')
-
+    sched.add_job(update_interval_job, 'interval', hours=1, id='update_job', start_date='2016-01-27 11:30:00')
+    sched.add_job(backup_yestoday_job, 'cron', day_of_week='0-6', hour=0, minute=2, start_date="2016-01-27", id='backup_job')
     sched.start()

@@ -77,8 +77,8 @@ def check_today_db():
 def update_today_db(update=False, date=None):
     ''' update the datebase info '''
     if date is None:
-        today = get_today_date()
-    ext = Extract(today, DATA_DEST_ROOT)
+        date = get_today_date()
+    ext = Extract(date, DATA_DEST_ROOT)
 
     data_path = os.path.join(DATA_DEST_ROOT, get_today_date())
     if not os.path.exists(data_path):
