@@ -131,7 +131,7 @@ class Crash_Info_Model(object):
     
     def update_hash(self, hash_value, count):
         cur = self.conn.cursor()
-        cur.execute('update hash_info set count=? where hash_value=?',(count, hash_value))
+        cur.execute('update hash_info set count=? where hash_value=?', (count, hash_value))
         self.conn.commit()
 
     def fetch_all_hash(self):
@@ -148,7 +148,11 @@ class Crash_Info_Model(object):
 
     def when_update(self):
         cur = self.conn.cursor()
-        cur.execute('insert into update_info (update_time) values (?)', (time.time(),))
+        item = cur.execute('select * form update_info').fetchone()
+        if item:
+            cur.execute('update update_info set update_time=(?) where id=1', (time.time(),))
+        else:
+            cur.execute('insert into update_info (update_time) values (?)', (time.time(),))
         self.conn.commit()
 
     def close(self):
