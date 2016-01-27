@@ -126,7 +126,7 @@ def history():
 def history_detail(date):
     db = get_db_inst_of_day(date)
     data = db.get_crash_data()
-    if not rows:
+    if not data:
         flash("No data of the day( %s )" % date)
         return redirect(url_for('history'))
 
