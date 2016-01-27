@@ -50,6 +50,13 @@ class DB_model(object):
         conn.close()
         return rows
 
+    def get_status(self, id):
+        conn = sqlite3.connect(self.db_name)
+        cur = conn.cursor()
+        item = cur.execute('select status, author from crash_info where id=?', (id,)).fetchone()
+        conn.close()
+        return item
+
     def refresh(self, id='', author='', status=0):
         conn = sqlite3.connect(self.dbname)
         conn.text_factory = str
