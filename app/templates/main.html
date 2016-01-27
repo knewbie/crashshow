@@ -67,7 +67,7 @@
                     <td> <a class="btn btn-warning" href="{{ url_for('doit',id=item.id) }}" >Done</a></td>
                     {% elif item.status == 2 %}
                     <td>DONE</td>
-                    <td class="btn btn-success"><strong>GAME OVER</strong></td>
+                    <td class="btn btn-success"><strong>DEATH</strong></td>
                     {% endif %}
                 </tr>
                 {% endfor %}
