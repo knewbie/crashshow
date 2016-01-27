@@ -63,7 +63,7 @@ class DB_model(object):
             return None
         conn = sqlite3.connect(self.dbname)
         cur = conn.cursor()
-        row = cur.execute('select update_time from update_info where id=1').fetchone()
+        row = cur.execute('select update_time from update_info order by id limit 1').fetchone()
         conn.close()
         return row[0]
 
@@ -148,11 +148,7 @@ class Crash_Info_Model(object):
 
     def when_update(self):
         cur = self.conn.cursor()
-        item = cur.execute('select * form update_info').fetchone()
-        if item:
-            cur.execute('update update_info set update_time=(?) where id=1', (time.time(),))
-        else:
-            cur.execute('insert into update_info (update_time) values (?)', (time.time(),))
+        cur.execute('insert into update_info (update_time) values (?)', (time.time(),))
         self.conn.commit()
 
     def close(self):
