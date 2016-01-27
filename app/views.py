@@ -119,7 +119,7 @@ def history():
     if len(days) == 0:
         flash("There is no history data to check")
         return redirect(url_for('index'))
-    return render_template('history.html', days=days, data=None)
+    return render_template('history.html', all_days=days, data=None)
 
 
 @app.route('/history_detail/<date>', methods=['GET'])
