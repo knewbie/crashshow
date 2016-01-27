@@ -61,10 +61,10 @@
                     <td> {{ item.author }} </td>
                     {% if item.status == 0 %}
                     <td>TODO</td>
-                    <td> <a class="btn btn-info" href="{{ url_for('takeit', id=item.id) }}">Take Her</a></td>
+                    <td> <a class="btn btn-info" href="{{ url_for('takeit', id=item.id) }}">TAKE</a></td>
                     {% elif item.status == 1 %}
                     <td>DOING</td>
-                    <td> <a class="btn btn-warning" href="{{ url_for('doit',id=item.id) }}" >Done</a></td>
+                    <td> <a class="btn btn-warning" href="{{ url_for('doit',id=item.id) }}" >DONE</a></td>
                     {% elif item.status == 2 %}
                     <td>DONE</td>
                     <td class="btn btn-success"><strong>DEATH</strong></td>
