@@ -125,23 +125,20 @@ def history():
 @app.route('/history_detail/<date>', methods=['GET'])
 def history_detail(date):
     db = get_db_inst_of_day(date)
-    rows = db.get_crash_data()
+    data = db.get_crash_data()
     if not rows:
         flash("No data of the day( %s )" % date)
         return redirect(url_for('history'))
 
     all_days = [dict(date=r[1]) for r in db_handler.get_all() if r[1] != get_today_date()]
-
-    data = [dict(id=r[0], info=r[2], times=r[3], status=r[4], author=r[5])
-            for r in rows]
-    return render_template('history.html', all_days=all_days, data=data, day=date)
+    dat = [dict(id=r+1, hash=data[r][1], info=data[r][2], times=data[r][3], status=data[r][4], author=data[r][5]) for r in range(len(data))]
+    return render_template('history.html', all_days=all_days, data=dat, day=date)
 
 
 @app.route('/login', methods=['POST'])
 def login():
     error = None
     if request.method == 'POST':
-        print request.form['username'], request.form['password']
         if request.form['username'] not in user_dict:
             error = 'Invalid username'
         elif request.form['password'] != user_dict.get(request.form['username']):
