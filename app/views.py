@@ -1,15 +1,10 @@
 # -*-:coding = utf-8 -*-
-from app import app
+
+from hashlib import sha1
 from flask import request, session,  redirect, url_for,  render_template, flash
+from app import app
 from models import db_handler
 from utils import *
-
-user_dict = {
-        'admin':'admin',
-        'kevin':'kevinlee',
-        'lwn':'lwn1234',
-        'ff':'ff1234',
-        'mxc':'mxc1234'}
 
 
 @app.route('/')
@@ -137,18 +132,21 @@ def history_detail(date):
 
 @app.route('/login', methods=['POST'])
 def login():
-    error = None
     if request.method == 'POST':
-        if request.form['username'] not in user_dict:
-            error = 'Invalid username'
-        elif request.form['password'] != user_dict.get(request.form['username']):
-            error = 'Invalid password'
+        uname = request.form.get('username', '').strip()
+        pw = request.form.get('password', '').strip()
+        if uname == '' or db_handler.check_user_name_valid(uname):
+            flash('Invalid username')
+            print 'Wrong uname: %s' % uname
+        elif pw == '' or sha1(pw).hexdigest() != db_handler.get_user_passwd(uname):
+            flash('Invalid password')
+            print "Wrong pw: %s" % pw
         else:
             session['login_in'] = True
-            session['username'] = request.form['username']
+            session['username'] = uname
             flash("You have logged in. Now you can take care the crash info. Sign out on the top right.Have a fun.. ^_^")
             return redirect(url_for('show_today'))
-    return render_template('main.html', error=error)
+    return redirect(url_for('index'))
 
 
 @app.route('/logout')
@@ -158,3 +156,30 @@ def logout():
     #session.pop('req_today_db', None)
     flash('You have signed out.')
     return redirect(url_for('index'))
+
+
+@app.route('/adduser', methods=['POST', 'GET'])
+def adduser():
+    if not session.get('login_in'):
+        flash('Please login Admin account to add user')
+        return redirect(url_for('index'))
+
+    if request.method == 'GET':
+        tip = "Add A New User"
+        return render_template('user.html', status=True, data=None, tip=tip)
+    elif request.method == 'POST':
+        uname = request.form.get('username', '').strip()
+        pw = request.form.get('password', '').strip()
+        pw1 = request.form.get('password1', '').strip()
+        if uname.strip() == '':
+            flash('Please input the valid username')
+            return render_template('user.html', status=True, data=None, warn=None)
+        elif not db_handler.check_user_name_valid(uname):
+            msg = ['Username: <strong style="color:red"> %s </strong>  has beed registered, Please input another!' % uname]
+            return render_template('user.html', status=True, data=None, warn=msg)
+        elif pw != pw1:
+            msg = ["Two passwords don't identify. Please check it agaion"]
+            return render_template('user.html', status=True, data=None, warn=msg)
+        else:
+            db_handler.save_user(uname, sha1(pw.strip()).hexdigest())
+            return redirect(url_for('index'))

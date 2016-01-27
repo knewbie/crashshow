@@ -14,8 +14,8 @@ class All_db_model(object):
     def __init__(self, dbname):
         self.db_name = dbname
         if not os.path.isfile(dbname):
-            self.dbcn = sqlite3.connect(dbname)
-            cur = self.dbcn.cursor()
+            conn = sqlite3.connect(dbname)
+            cur = conn.cursor()
             cur.executescript("""
                     CREATE TABLE all_db_info(
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,6 +23,13 @@ class All_db_model(object):
                     dbname STRING NOT NULL,
                     create_time STRING NOT NULL);
                     """)
+            cur.executescript("""
+                    CREATE TABLE users(
+                    username STRING PRIMARY KEY,
+                    password STRING NOT NULL)
+                    """)
+            conn.commit()
+            conn.close()
 
     def get_one_day_info(self, date):
         conn = sqlite3.connect(self.db_name)
@@ -41,7 +48,7 @@ class All_db_model(object):
         return rows
 
     def get_all(self):
-        conn = sqlite3.connect(self.db_name)
+        conn = sqlite3.connect(self.rb_name)
         cur = conn.cursor()
         rows = cur.execute("select dbname, create_time from all_db_info order by dbdate desc").fetchall()
         cur.close()
@@ -55,5 +62,28 @@ class All_db_model(object):
         conn.commit()
         conn.close()
 
+    def check_user_name_valid(self, username):
+        conn = sqlite3.connect(self.db_name)
+        cur = conn.cursor()
+        users =[u[0] for u in cur.execute('select username from users').fetchall()]
+        conn.close()
+        if username in users:
+            return False
+        else:
+            return True
+
+    def get_user_passwd(self, uname):
+        conn = sqlite3.connect(self.db_name)
+        cur = conn.cursor()
+        passwd = cur.execute('select password from users where username=?', (uname,)).fetchone()
+        conn.close()
+        return passwd[0]
+
+    def save_user(self, uname, passwd):
+        conn = sqlite3.connect(self.db_name)
+        cur = conn.cursor()
+        cur.execute('insert into users values (?,?)', (uname, passwd))
+        conn.commit()
+        conn.close()
 
 db_handler = All_db_model(DB_NAME)

@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block detail %}
+
+<div class="reg">
+    <h2> {{ tip }} </h2>
+    </br>
+    <form  class="form-horizontal" action="{{ url_for('adduser') }}" method="post">
+        <div class="form-group">
+            <label for="inputname" class="col-sm-2 control-label">Name</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control" name="username" id="inputname" placeholder="Name">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputpasswd" class="col-sm-2 control-label">Password</label>
+            <div class="col-sm-5">
+                <input type="password" class="form-control" name="password" id="inputpasswd" placeholder="Password">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputpasswd1" class="col-sm-2 control-label">Confirm Password</label>
+            <div class="col-sm-5">
+                <input type="password" class="form-control" name="password1" id="inputpasswd1">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default">Register</button>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+
+
+
+{% endblock%}

@@ -39,8 +39,16 @@
                 </form>
             </div>
             {% else %}
-            <div class="nav-login">
-                <a href="{{ url_for('logout') }}"> Sign Out </a>
+            <div class="logout">
+                <ul>
+                    <li class="nav-user">
+                        <span> {{ session.username }} </span>
+                    </li>
+                    &nbsp;&nbsp;
+                    <li class="nav-logout">
+                        <a class="btn btn-warning" href="{{ url_for('logout') }}"> Sign Out </a>
+                    </li>
+                </ul>
             </div>
             {% endif %}
         </div>
@@ -56,9 +64,11 @@
         {% if error %} <p class="bg-danger"> <strong>Error: </strong>{{ error }} </p> {% endif %}
 
         {% if warn %}
+        {% autoescape false %}
         {% for w in warn %}
         <p class='bg-waring'> <strong> {{ w }} </strong></p>
         {% endfor %}
+        {% endautoescape %}
         {% endif %}
 
         </div>
