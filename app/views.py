@@ -79,7 +79,7 @@ def takeit(id):
     if st[0] == 0:
         db.refresh(id, session.get('username'), 1)
     elif st[0] == 1 and st[1] != session.get('username'):
-        tip = "This bug has been processed by <strong style='color:red'>%s </strong>" % st[1]
+        tip = ["This bug has been processed by <strong style='color:red'>%s </strong>" % st[1] ]
     data = [dict(id=r[0], hash=r[1], info=r[2], times=r[3], status=r[4], author=r[5])
             for r in db.get_crash_data()]
     return render_template('main.html', data=data, warn=tip)
@@ -100,7 +100,7 @@ def doit(id):
     tip = None
     st = db.get_status(id)
     if st[1] != session.get('username'):
-        tip = "This bug has been processed by <strong style='color:red'>%s </strong>. Don't rob other's glory" % st[1]
+        tip = ["This bug has been processed by <strong style='color:red'>%s </strong>. Don't rob other's glory" % st[1]]
     else:
         db.refresh(id, session.get('username'), 2)
 
