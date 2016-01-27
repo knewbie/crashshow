@@ -48,7 +48,7 @@ class All_db_model(object):
         return rows
 
     def get_all(self):
-        conn = sqlite3.connect(self.rb_name)
+        conn = sqlite3.connect(self.db_name)
         cur = conn.cursor()
         rows = cur.execute("select dbname, create_time from all_db_info order by dbdate desc").fetchall()
         cur.close()
