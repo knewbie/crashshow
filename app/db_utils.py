@@ -63,7 +63,7 @@ class DB_model(object):
             return None
         conn = sqlite3.connect(self.dbname)
         cur = conn.cursor()
-        row = cur.execute('select update_time from update_info order by id limit 1').fetchone()
+        row = cur.execute('select update_time from update_info order by id desc limit 1').fetchone()
         conn.close()
         return row[0]
 
