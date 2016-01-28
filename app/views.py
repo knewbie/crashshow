@@ -41,7 +41,7 @@ def show_today():
     if data is None:
         flash("There's no data in the database.")
         return render_template('main.html', status=False, data=None)
-    dat = [dict(id=r+1, hash=data[r][1], info=data[r][2], times=data[r][3], status=data[r][4], author=data[r][5]) for r in range(len(data))]
+    dat = [dict(no=r+1, id=data[r][0], hash=data[r][1], info=data[r][2], times=data[r][3], status=data[r][4], author=data[r][5]) for r in range(len(data))]
     t = db_update_time_to_str(db.get_last_update())
     return render_template('main.html', status=status, data=dat, time=t)
 
@@ -79,10 +79,10 @@ def takeit(id):
     if st[0] == 0:
         db.refresh(id, session.get('username'), 1)
     elif st[0] == 1 and st[1] != session.get('username'):
-        tip = ["This bug has been processed by <strong style='color:red'>%s </strong>" % st[1] ]
-    data = [dict(id=r[0], hash=r[1], info=r[2], times=r[3], status=r[4], author=r[5])
-            for r in db.get_crash_data()]
-    return render_template('main.html', data=data, warn=tip)
+        tip = ["This bug has been processed by <strong style='color:red'>%s </strong>" % st[1]]
+    data = db.get_crash_data()
+    dat = [dict(no=r+1, id=data[r][0], hash=data[r][1], info=data[r][2], times=data[r][3], status=data[r][4], author=data[r][5]) for r in range(len(data))]
+    return render_template('main.html', data=dat, warn=tip)
 
 
 @app.route('/doit/<id>', methods=['GET'])
@@ -103,9 +103,8 @@ def doit(id):
         tip = ["This bug has been processed by <strong style='color:red'>%s </strong>. Don't rob other's glory" % st[1]]
     else:
         db.refresh(id, session.get('username'), 2)
-
-    data = [dict(id=r[0], hash=r[1], info=r[2], times=r[3], status=r[4], author=r[5])
-            for r in db.get_crash_data()]
+    data = db.get_crash_data()
+    dat = [dict(no=r+1, id=data[r][0], hash=data[r][1], info=data[r][2], times=data[r][3], status=data[r][4], author=data[r][5]) for r in range(len(data))]
     return render_template('main.html', data=data, warn=tip)
 
 

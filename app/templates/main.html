@@ -53,7 +53,7 @@
                     {% elif item.status == 1 %}"warning" 
                     {% elif item.status == 2 %}"success"
                     {% endif %}>
-                    <td> {{ item.id }} </td>
+                    <td> {{ item.no }} </td>
                     {% autoescape false %}
                     <td class="crash-text"> {{ item.info }} </td>
                     {% endautoescape %}
