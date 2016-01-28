@@ -4,7 +4,7 @@ from shutil import copyfile, rmtree
 from datetime import datetime, timedelta
 from db_utils import DB_model
 from data_collect import Extract
-from config import DATA_SRC_ROOT, DATA_DEST_ROOT
+from config import DATA_SRC_ROOT, DATA_DEST_ROOT, APP
 
 
 def time_str_to_int(t=''):
@@ -89,7 +89,7 @@ def update_today_db(update=False, date=None):
     files = os.listdir(data_path)
     for k in os.listdir(src_dir):
         f = ''.join([k, '_ledo_game.log'])
-        if 'kof97' in k and f not in files:
+        if APP in k and f not in files:
             src_file = ''.join([src_dir, '/', k, '/', 'ledo_game.log'])
             if os.path.isfile(src_file):
                 new_name = ''.join([data_path, '/', f])
@@ -147,7 +147,7 @@ def collect_oneday(d):
     if not os.path.exists(src_dir):
         raise ValueError("Wrong directory: %s" % src_dir)
     for k in os.listdir(src_dir):
-        if 'kof97' in k:
+        if APP in k:
             f = ''.join([src_dir, '/', k, '/', 'ledo_game.log'])
             if os.path.isfile(f):
                 copyfile(f, ''.join([data_path, '/', k, '_ledo_game.log']))
