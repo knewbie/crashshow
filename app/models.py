@@ -26,7 +26,7 @@ class All_db_model(object):
             cur.executescript("""
                     CREATE TABLE users(
                     username STRING PRIMARY KEY,
-                    password STRING NOT NULL)
+                    password STRING NOT NULL);
                     """)
             conn.commit()
             conn.close()
