@@ -79,7 +79,10 @@ class DB_model(object):
         cur = conn.cursor()
         row = cur.execute('select update_time from update_info order by id desc limit 1').fetchone()
         conn.close()
-        return row[0]
+        if row:
+            return row[0]
+        else:
+            return None
 
 
 class Crash_Info_Model(object):

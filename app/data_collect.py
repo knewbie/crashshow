@@ -14,6 +14,7 @@ class Extract(object):
     key_words = [  r'CEGUI::UnknownObjectException',
         r'CEGUI::AlreadyExistsException',
         r'CEGUI::InvalidRequestException',
+        r'CEGUI::FileIOException',
         r'CEGUI::ScriptException',
         r'LUA ERROR'
       ]
