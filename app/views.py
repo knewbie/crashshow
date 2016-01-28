@@ -105,7 +105,7 @@ def doit(id):
         db.refresh(id, session.get('username'), 2)
     data = db.get_crash_data()
     dat = [dict(no=r+1, id=data[r][0], hash=data[r][1], info=data[r][2], times=data[r][3], status=data[r][4], author=data[r][5]) for r in range(len(data))]
-    return render_template('main.html', data=data, warn=tip)
+    return render_template('main.html', data=dat, warn=tip)
 
 
 
