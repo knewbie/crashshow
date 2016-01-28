@@ -107,6 +107,16 @@ def doit(id):
     dat = [dict(no=r+1, id=data[r][0], hash=data[r][1], info=data[r][2], times=data[r][3], status=data[r][4], author=data[r][5]) for r in range(len(data))]
     return render_template('main.html', data=dat, warn=tip)
 
+@app.route('/delete/<id>', methods=['GET'])
+def delete(id):
+    if not session.get('login_in') or session.get('username') != 'admin':
+        flash("Permission Denied! No Admin Login")
+        return redirect(url_for('index'))
+    db = get_db_inst_of_day(session.get('req_today_db'))
+    db.delete(int(id))
+    data = db.get_crash_data()
+    dat = [dict(no=r+1, id=data[r][0], hash=data[r][1], info=data[r][2], times=data[r][3], status=data[r][4], author=data[r][5]) for r in range(len(data))]
+    return render_template('main.html', data=dat, warn=None)
 
 
 @app.route('/history')

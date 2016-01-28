@@ -65,6 +65,13 @@ class DB_model(object):
         conn.commit()
         conn.close()
 
+    def delete(self, id=None):
+        conn = sqlite3.connect(self.dbname)
+        cur = conn.cursor()
+        cur.execute('delete from crash_info where id=?',(id,))
+        conn.commit()
+        conn.close()
+
     def get_last_update(self):
         if not self._check_table_exist('update_info'):
             return None

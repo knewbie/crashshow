@@ -69,6 +69,7 @@
                     <td>DONE</td>
                     <td><strong class="btn btn-success">DEATH</strong></td>
                     {% endif %}
+                    <td><a class="btn btn-danger" href="{{ url_for('delete',id=item.id) }}">DEL</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
